@@ -1,0 +1,41 @@
+<html lang="en">
+
+<head>
+  <meta name="viewport" 
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Cloud Login</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/authandle.css') }}">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+  <div class="wrapper">
+    <div id="formContent">
+      
+        <br style="line-height: 2;">
+        
+        <div>
+          <img src="{{ url_for('static',filename='images/cloud.png') }}" id="icon" alt="User Icon" />
+        </div>
+        <br style="line-height: 2;">
+      
+
+          <input class="valInput" type="tel" id="login" name="phoneNumber" placeholder="Phone Number" maxlength="15" value="{{ pNum }}">
+          <br><br>
+          <input type="button" id="continue_btn" onclick=validate() value="Continue">
+          <img src="{{ url_for('static',filename='images/rolling.svg') }}" id="loading_svg">
+          <br>
+
+      <!-- Regresh Page -->
+      <div id="formFooter"> 
+        <a class="underlineHover" href="/">Refresh page</a> | <a class="underlineHover" href="/about">About</a>
+      </div>
+
+    </div>
+  </div>
+  <div id="flash-message" class="flash-message"></div>
+
+    <script src="{{ url_for('static', filename='scripts/authandle.js') }}"></script>
+</body>
+
+</html>

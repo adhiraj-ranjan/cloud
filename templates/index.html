@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" 
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="theme-color" content="#161b22">
+    <title>Cloud v2</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/index.css') }}">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    
+	<header>
+		<div class="logout-btn">
+			<img src="{{ url_for('static',filename='images/logout.png') }}" alt="logout" onclick="logout()">
+			<p id="pname"></p>
+		</div>
+		<div class="search-box">
+			<img class="refresh_btn" src="{{ url_for('static',filename='images/refresh.png') }}" onclick="refresh_files()" alt="refresh">
+			<input type="text" placeholder="Search for files..." class="search-input">
+		</div>
+	</header>
+	<div class="sections">
+		<div class="left-section">
+			<div class="download-dropdown">
+				<p onclick="openUploadDialog()">Upload File</p>
+				<img id="dropdown" src="{{ url_for('static',filename='images/dropdown.png') }}" alt="dropdown">
+			</div>
+			<div class="download_area">
+				<!--download listing goes here-->		
+			</div>
+		</div>
+		<div class="file-listing" id="fileScrollDiv">
+			<table class="0" id="files">
+				<tbody>
+					<!-- Repeat this row for each file -->
+				</tbody>
+			</table>
+			<center><img id="floadsvg" src="{{ url_for('static',filename='images/fileload.svg') }}" alt="loading"></center>
+			<center><p id="nofilestext">No files found!</p></center>
+		</div>
+	</div>
+
+	<!-- right click context menu -->
+	<div class="wrapper">
+		<div class="content">
+		  <ul class="menu">
+			<li class="item" onclick="downloadFile()">
+				<img src="{{ url_for('static',filename='images/downcloud.svg') }}" alt="icon">
+			  	<span>Download</span>
+			</li>
+			<li class="item" id="confirm_delete" onclick="show_confirm_delete()" alt="icon">
+				<img src="{{ url_for('static',filename='images/trash.svg') }}">
+			  	<span>Delete</span>
+			</li>
+			<li class="item" id="delete_btn_cnf" onclick="del_file()" alt="icon">
+				<img src="{{ url_for('static',filename='images/trash.svg') }}">
+				<span>Sure ?</span>
+			</li>
+			<li class="item" onclick="stream_req()" alt="icon">
+				<img src="{{ url_for('static',filename='images/stream.svg') }}">
+				<span>Stream</span>
+			</li>
+            <li class="item" onclick="get_share_url()" alt="icon">
+				<img src="{{ url_for('static',filename='images/share.png') }}">
+				<span>Share</span>
+			</li>
+		  </ul>
+		</div>
+	  </div>
+	
+	<div id="flash-message" class="flash-message"></div>
+	<!-- Upload dialog box -->
+	<div id="upload-dialog" class="dialog">
+		<div class="upload-form">
+			<input type="file" class="file-input" alt="file input" hidden multiple>
+			<p id="upload_btn">Select File</p>
+			<img id="uploading_svg" src="{{ url_for('static',filename='images/uploading.svg') }}" alt="uploading">
+		</div>
+        <div class="uploading-info">
+            <p id="fcount"></p>
+            <p>&nbsp;files remaining&nbsp;</p>
+            <p id="ofuploadcancel" title="Cancel remaining uploads">&nbsp;cancel uploads&nbsp;</p>
+        </div>
+		<section class="progress-area">
+		</section>
+		<section class="uploaded-area">
+		</section>
+		<button type="button" class="dialog-close-btn" onclick="closeUploadDialog()">Close</button>
+	</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+	<script src="{{ url_for('static',filename='scripts/index.js') }}"></script>
+</body>
+</html>

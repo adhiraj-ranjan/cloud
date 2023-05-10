@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/CDNSFree2/Plyr/plyr.css" />
+        <style>
+            
+            body {
+                background-color: #000;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+        <title>Audio Player</title>
+    </head>
+    <body>
+        <audio controls id="player" autoplay>
+            <source src="{{ audiosrc }}" type="{{ mtype }}">
+            Your browser does not support the audio element.
+        </audio>
+        <script src="https://cdn.jsdelivr.net/gh/CDNSFree2/Plyr/plyr.min.js"></script>
+    </body>
+</html>

@@ -1,0 +1,5 @@
+telethon
+flask
+cryptg
+pytz
+firebase_admin
