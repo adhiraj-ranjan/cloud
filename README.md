@@ -2,6 +2,14 @@
 
 # Under Development
 
+Will add Documentation soon
+
+### Features to add
+- [ ] Faster Api response
+- [ ] File Rename
+- [ ] Adding Folders Support
+
+
 ### Find Me on :
 <p align="left">
   <a href="https://github.com/adhiraj-ranjan" target="_blank"><img src="https://img.shields.io/badge/Github-adhiraj--ranjan-green?style=for-the-badge&logo=github"></a>
