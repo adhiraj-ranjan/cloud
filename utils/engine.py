@@ -15,7 +15,7 @@ api_hash = environ['api_hash']
 timezone = pytz.timezone('Asia/Kolkata')
 fernet = Fernet(environ['fernet_key'].encode('UTF-8'))
 
-db = pickledb.load("sessions.db", True)
+db = pickledb.load("sessions/sessions.db", True)
 
 def __get_client(sessionName, loop=None):
     string = db.get(sessionName)
