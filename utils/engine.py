@@ -1,22 +1,24 @@
 import pytz
 from cryptography.fernet import Fernet
-from os import remove
+from os import remove, environ
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 from telethon.tl.types import InputMessagesFilterDocument
 from uuid import uuid4
 from datetime import datetime
 import asyncio
-from utils import session
+import pickledb
 
-api_id = "19248820"
-api_hash = "a6d552e0d90ff76233f99b9f4bcb6706"
+api_id = environ['api_id']
+api_hash = environ['api_hash']
 
 timezone = pytz.timezone('Asia/Kolkata')
-fernet = Fernet(b'fHJJztpaOwc6SXwuq-7aapv4PBqyXU0M8T20KyPhQh0=')
+fernet = Fernet(environ['fernet_key'].encode('UTF-8'))
+
+db = pickledb.load("sessions.db", True)
 
 def __get_client(sessionName, loop=None):
-    string = session.get_session(sessionName)
+    string = db.get(sessionName)
     if not loop:
         return TelegramClient(StringSession(string), api_id, api_hash)
     else:
@@ -31,7 +33,7 @@ def convertUtcDatetimeToIstString(utcDatetime, tzInfo):
 
 async def send_code(pNum):
     s_name = str(uuid4())
-    client = TelegramClient("tempSessions/" + s_name, api_id, api_hash)
+    client = TelegramClient("sessions/tempSessions/" + s_name, api_id, api_hash)
     await client.connect()
     code_obj = await client.send_code_request(pNum)
     await client.disconnect()
@@ -39,15 +41,15 @@ async def send_code(pNum):
 
 
 async def login(pNum, s_name, c_hash, code, password):
-    client = TelegramClient("tempSessions/" + s_name, api_id, api_hash)
+    client = TelegramClient("sessions/tempSessions/" + s_name, api_id, api_hash)
     await client.connect()
     if password:
         await client.sign_in(password=password)
     else:
         await client.sign_in(phone=pNum, phone_code_hash=c_hash, code=code)
-    session.add_session(s_name, StringSession.save(client.session))
+    db.set(s_name, StringSession.save(client.session))
     await client.disconnect()
-    remove(f"tempSessions/{s_name}.session")
+    remove(f"sessions/tempSessions/{s_name}.session")
 
 
 async def get_name(s_name):
@@ -190,5 +192,5 @@ async def logout(s_name):
     client = __get_client(s_name)
     await client.connect()
     await client.log_out()
-    session.delete_session(s_name)
+    db.rem(s_name)
     await client.disconnect()
