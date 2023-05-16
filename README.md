@@ -5,7 +5,7 @@
 Will add Documentation soon
 
 ### Features to add
-- [ ] Faster Api response
+- [X] Faster Api response
 - [ ] File Rename
 - [ ] Adding Folders Support
 
