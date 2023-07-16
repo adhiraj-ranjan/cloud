@@ -3,3 +3,4 @@ flask
 cryptg
 pytz
 pickledb
+cryptography
