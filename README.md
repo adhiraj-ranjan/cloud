@@ -2,8 +2,6 @@
 
 # Under Development
 
-Will add Documentation soon
-
 ## Running Demo Instance
 
 https://tcloud.run-ap-south1.goorm.app/
