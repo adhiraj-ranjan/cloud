@@ -6,7 +6,7 @@ Will add Documentation soon
 
 ## Running Demo Instance
 
-https://cloud.itertools.repl.co
+https://tcloud.run-ap-south1.goorm.app/
 
 ### Features to add
 - [X] Faster Api response
