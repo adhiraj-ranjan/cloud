@@ -3,6 +3,7 @@ import asyncio
 import re
 import urllib.parse
 import utils.engine as engine
+from waitress import serve
 
 app = Flask(__name__)
 
@@ -17,6 +18,7 @@ def login_r():
     else:
         p = request.args.get("p")
         return render_template("login.html", pNum="+" + p.strip() if p else "")
+
 
 @app.route("/validate", methods=['POST'])
 def validate_phone():
@@ -33,8 +35,8 @@ def validate_phone():
         return jsonify({"status": "ok", "otp_sent": True, "response": "otp sent successfully", "phoneNumber": pNumber, "c_hash": c_hash, "s_name": s_name})
     except Exception as e:
         return jsonify({"status": "fail", "response": str(e), "otp_sent": False})
-    
-    
+
+
 @app.route("/authorize", methods=['POST'])
 def check_creds():
     code = request.get_json()['code']
@@ -44,11 +46,12 @@ def check_creds():
     phoneNum = request.cookies.get("phoneNumber")
     # try sign in
     try:
-        asyncio.run(engine.login(phoneNum, sessionName, codeHash, code, passwd))
+        asyncio.run(engine.login(
+            phoneNum, sessionName, codeHash, code, passwd))
         return jsonify({"status": "ok", "response": "logged in successfully", "logged_in": True})
     except Exception as e:
         return jsonify({"status": "fail", "response": str(e), "logged_in": False})
-        
+
 
 @app.route("/get_profile_name", methods=['POST'])
 def get_name_r():
@@ -59,15 +62,18 @@ def get_name_r():
     except:
         return make_response(jsonify({"status": "not found"}), 404)
 
+
 @app.route("/get_files", methods=['POST'])
 def get_files_r():
     token = request.cookies.get("token")
     try:
         offset = request.get_json()['offset_id']
-        file_listing = asyncio.run(engine.get_files(s_name=token, offset=offset))
+        file_listing = asyncio.run(
+            engine.get_files(s_name=token, offset=offset))
         return jsonify(file_listing)
     except:
         return make_response(jsonify({"status": "not found"}), 404)
+
 
 @app.route("/delete_file", methods=['POST'])
 def delete_file_r():
@@ -78,7 +84,7 @@ def delete_file_r():
         return jsonify({"status": "ok"})
     except:
         return make_response(jsonify({"status": "not found"}), 404)
-    
+
 
 @app.route("/logout", methods=['POST'])
 def logout_r():
@@ -90,6 +96,7 @@ def logout_r():
         pass
     return jsonify({"status": "ok", "logged_out": True})
 
+
 @app.route("/upload", methods=['POST'])
 def upload():
     token = request.cookies.get("token")
@@ -97,18 +104,22 @@ def upload():
         filename = request.headers.get('X-File-Name')
         filesize = request.headers.get('X-File-Size')
         f = urllib.parse.unquote(filename)
-        asyncio.run(engine.upload_file(token, request.stream, f, fsize=int(filesize)))
+        asyncio.run(engine.upload_file(
+            token, request.stream, f, fsize=int(filesize)))
         return jsonify({"status": "ok", "response": "file has been uploaded"})
     except Exception as e:
         return jsonify({"status": "fail", "response": str(e)})
-    
+
+
 @app.route("/search_files", methods=['POST'])
 def search():
     token = request.cookies.get("token")
     try:
         offset = request.get_json()['offset_id']
-        searchQuery = request.get_json()['query'].replace(".", " ").encode('ascii', 'ignore').decode()
-        search_listing = asyncio.run(engine.search_file(token, searchQuery, offset))
+        searchQuery = request.get_json()['query'].replace(
+            ".", " ").encode('ascii', 'ignore').decode()
+        search_listing = asyncio.run(
+            engine.search_file(token, searchQuery, offset))
         return jsonify(search_listing)
     except:
         return make_response(jsonify({"status": "not found"}), 404)
@@ -127,7 +138,6 @@ def download():
         return make_response(jsonify({"status": "not found"}), 404)
 
 
-
 def parse_range_header(range_header, file_size):
     match = re.match(r'bytes=(\d+)-(\d+)?', range_header)
     if not match:
@@ -136,22 +146,25 @@ def parse_range_header(range_header, file_size):
     end = int(match.group(2)) if match.group(2) else file_size - 1
     return start, end
 
+
 def get_mtype(mtype):
-    return "video/mp4" if mtype.split("/")[0]=="video" else mtype
+    return "video/mp4" if mtype.split("/")[0] == "video" else mtype
+
 
 @app.route("/stream")
 def stream():
     token = request.cookies.get('token')
     file_id, m_type = request.args['id'], request.args['mime_type']
     length, fname = request.args['s'], request.args['n']
-    
+
     # Check for Range header
     range_header = request.headers.get('Range')
     if range_header:
         try:
             start, end = parse_range_header(range_header, int(length))
             resp = Response(
-                asyncio.run(engine.stream_chunks(token, file_id, offset=start)),
+                asyncio.run(engine.stream_chunks(
+                    token, file_id, offset=start)),
                 mimetype=get_mtype(m_type),
                 status=206,  # Partial Content
             )
@@ -169,9 +182,11 @@ def stream():
         resp = Response(byte_gen, mimetype=get_mtype(m_type))
 
     resp.headers['Content-Length'] = length
-    resp.headers.set('Content-Disposition', '', filename=urllib.parse.quote(fname))
+    resp.headers.set('Content-Disposition', '',
+                     filename=urllib.parse.quote(fname))
     return resp
-        
+
+
 def sendfile(token, f_id, m_type, f_length, f_name, stream):
     byte_gen = engine.get_file_chunks(token, f_id)
     try:
@@ -179,9 +194,11 @@ def sendfile(token, f_id, m_type, f_length, f_name, stream):
         resp = Response(byte_gen, mimetype=m_type)
         resp.headers['Content-Length'] = f_length
         if not stream:
-            resp.headers.set('Content-Disposition', 'attachment', filename=urllib.parse.quote(f_name))
+            resp.headers.set('Content-Disposition', 'attachment',
+                             filename=urllib.parse.quote(f_name))
         else:
-            resp.headers.set('Content-Disposition', '', filename=urllib.parse.quote(f_name))
+            resp.headers.set('Content-Disposition', '',
+                             filename=urllib.parse.quote(f_name))
         return resp
     except:
         return make_response(jsonify({"status": "not found"}), 404)
@@ -198,6 +215,7 @@ def get_share_url():
     except Exception:
         return make_response(jsonify({"status": "fail"}), 404)
 
+
 @app.route("/file")
 def get_file():
     id_str = request.args['id']
@@ -206,22 +224,26 @@ def get_file():
         query_string = engine.fernet.decrypt(id_str).decode()
         query_params = urllib.parse.parse_qs(query_string)
         return sendfile(token=query_params['t'][0], f_id=query_params['id'][0],
-                    m_type=query_params['mime_type'][0], f_length=query_params['s'][0],
-                    f_name=query_params['n'][0], stream=int(stream))
+                        m_type=query_params['mime_type'][0], f_length=query_params['s'][0],
+                        f_name=query_params['n'][0], stream=int(stream))
     except:
         return make_response(jsonify({"status": "not found"}), 404)
+
 
 @app.route('/favicon.ico')
 def favicon():
     return app.send_static_file("images/favicon.ico")
 
+
 @app.route('/manifest.json')
 def web_manifest():
     return app.send_static_file("manifest.json")
+
 
 @app.route('/about')
 def about():
     return render_template("about.html")
 
 
-app.run(host="0.0.0.0", threaded=True)
+# app.run(host="0.0.0.0", threaded=True)
+serve(app, host='0.0.0.0', port=8000)

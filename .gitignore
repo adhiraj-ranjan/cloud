@@ -1,8 +1,4 @@
-.config/
-.git/
-venv/
-.replit
-replit.nix
-.upm
-poetry.lock
-pyproject.toml
+.codesandbox
+.devcontainer
+.github
+utils/__pycache__
