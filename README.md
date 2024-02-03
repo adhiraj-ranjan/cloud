@@ -3,8 +3,7 @@
 # Under Development
 
 ## Running Demo Instance
-
-https://tcloud.run-ap-south1.goorm.app/
+http://qk725g-8000.csb.app)
 
 ### Features to add
 - [X] Faster Api response
