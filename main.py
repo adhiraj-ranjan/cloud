@@ -11,6 +11,7 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def login_r():
     phoneNumber = request.cookies.get("phoneNumber")
+    if phoneNumber: phoneNumber = urllib.parse.unquote(phoneNumber)
     if phoneNumber:
         return render_template("verify_otp.html", cnCode=phoneNumber[:-10], unHiddenDigits=phoneNumber[-3:], pNum=phoneNumber)
     elif request.cookies.get("token"):
@@ -44,6 +45,7 @@ def check_creds():
     codeHash = request.cookies.get("codeHash")
     sessionName = request.cookies.get("sessionName")
     phoneNum = request.cookies.get("phoneNumber")
+    if phoneNum: phoneNum = urllib.parse.unquote(phoneNum)
     # try sign in
     try:
         asyncio.run(engine.login(

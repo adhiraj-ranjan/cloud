@@ -2,3 +2,4 @@
 .devcontainer
 .github
 utils/__pycache__
+sessions/
