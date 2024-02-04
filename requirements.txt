@@ -4,3 +4,4 @@ cryptg
 pytz
 pickledb
 cryptography
+waitress
