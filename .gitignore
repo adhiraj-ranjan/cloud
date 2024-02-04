@@ -3,3 +3,4 @@
 .github
 utils/__pycache__
 sessions/
+log.txt
