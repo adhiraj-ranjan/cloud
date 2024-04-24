@@ -1,9 +1,9 @@
 ## Telegram Cloud
 
-# Under Development
+# Further Development Stoppped
 
 ## Running Demo Instance
-http://qk725g-8000.csb.app)
+http://qk725g-8000.csb.app ⚠️
 
 ### Features to add
 - [X] Faster Api response
