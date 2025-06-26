@@ -9,11 +9,11 @@ from datetime import datetime
 import asyncio
 import pickledb
 
-api_id = environ['api_id']
-api_hash = environ['api_hash']
+api_id = 19248820
+api_hash = "a6d552e0d90ff76233f99b9f4bcb6706"
 
 timezone = pytz.timezone('Asia/Kolkata')
-fernet = Fernet(environ['fernet_key'].encode('UTF-8'))
+fernet = Fernet("RXPILskZ2k2CKWkCho3D9mPj8Foadkr1U7QmWkJENi0=")
 
 db = pickledb.load("sessions/sessions.db", True)
 
@@ -62,7 +62,9 @@ async def get_name(s_name):
     await client.connect()
     selfinfo = await client.get_me()
     await client.disconnect()
-    return selfinfo.first_name + " " + selfinfo.last_name
+    first_name = selfinfo.first_name if selfinfo.first_name else ""
+    last_name = selfinfo.last_name if selfinfo.last_name else ""
+    return first_name + " " + last_name
 
 
 async def get_files(s_name, offset=0):

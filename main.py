@@ -61,7 +61,8 @@ def get_name_r():
     try:
         profile_name = asyncio.run(engine.get_name(token))
         return jsonify({"profile_name": profile_name})
-    except:
+    except Exception as e:
+        # print(e)
         return make_response(jsonify({"status": "not found"}), 404)
 
 
